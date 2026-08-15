@@ -286,13 +286,26 @@
       var n = Math.min(MAX, glyphPts.length);
       for (var i = 0; i < n; i++) {
         var gp = glyphPts[order[i]];
-        /* scatter: sphere-ish cloud via seeded angles */
         var a1 = hash(i * 3 + 1) * Math.PI * 2;
-        var a2 = hash(i * 3 + 2) * Math.PI;
-        var rad = 0.55 + hash(i * 3 + 3) * 0.75;
+        var sxn, syn;
+        if (opts.scatter === 'out') {
+          /* supernova: blast outward along (mostly) the target's own direction */
+          var dl = Math.hypot(gp.x, gp.y);
+          var dx = dl > 0.02 ? gp.x / dl : Math.cos(a1);
+          var dy = dl > 0.02 ? gp.y / dl : Math.sin(a1);
+          var rad = 0.85 + hash(i * 3 + 3) * 1.3;
+          var jitter = (hash(i * 3 + 2) - 0.5) * 0.6;
+          sxn = gp.x + (dx * rad - dy * jitter);
+          syn = gp.y + (dy * rad + dx * jitter);
+        } else {
+          /* scatter: sphere-ish cloud via seeded angles */
+          var a2 = hash(i * 3 + 2) * Math.PI;
+          var rad2 = 0.55 + hash(i * 3 + 3) * 0.75;
+          sxn = Math.cos(a1) * Math.sin(a2) * rad2;
+          syn = Math.sin(a1) * Math.sin(a2) * rad2 * 0.72;
+        }
         particles.push({
-          sx: Math.cos(a1) * Math.sin(a2) * rad,
-          sy: Math.sin(a1) * Math.sin(a2) * rad * 0.72,
+          sx: sxn, sy: syn,
           tx: gp.x, ty: gp.y,
           teal: hash(i * 5 + 2) > 0.78,
           sz: 0.5 + hash(i * 5 + 3) * 1.0,
@@ -411,8 +424,165 @@
   }
 
   /* ============================================================================
-   * ColCore.mount(root, opts) — full core: starfield + eye + rings
+   * SUPERNOVA — interactive detonation: pulsing star -> flash -> shockwave ->
+   * ejecta blast -> debris settles into the eye remnant (SN 1987A aesthetic)
    * ========================================================================== */
+
+  function supernova(root, opts) {
+    opts = opts || {};
+    if (getComputedStyle(root).position === 'static') root.style.position = 'relative';
+
+    var starCanvas = makeCanvas(root, 0);
+    var fxCanvas = makeCanvas(root, 1);
+    var eyeCanvas = makeCanvas(root, 2);
+    var stars = new Starfield(starCanvas, { density: window.innerWidth < 768 ? 0.00016 : 0.00022 });
+    var eye = new ParticleEye(eyeCanvas, { scatter: 'out', particles: opts.particles });
+    var rings = opts.rings === false ? null : hudRings(root, opts.rings || {});
+
+    var fx = fxCanvas.getContext('2d');
+    var state = 'star'; /* star -> firing -> done */
+    var mouse = { x: -9999, y: -9999 };
+    var fire = null;    /* {t0} when detonated */
+
+    function refit() {
+      fitCanvas(starCanvas); fitCanvas(fxCanvas); fitCanvas(eyeCanvas);
+      stars.refit(); eye.refit();
+      if (REDUCED) eye.drawStatic();
+    }
+    refit();
+    window.addEventListener('resize', refit, { passive: true });
+
+    root.addEventListener('mousemove', function (e) {
+      var r = fxCanvas.getBoundingClientRect();
+      mouse.x = (e.clientX - r.left) * dpr();
+      mouse.y = (e.clientY - r.top) * dpr();
+    }, { passive: true });
+    root.addEventListener('mouseleave', function () { mouse.x = mouse.y = -9999; }, { passive: true });
+
+    function detonate() {
+      if (state === 'firing') return;
+      state = 'firing';
+      fire = { t0: performance.now() / 1000 };
+      eye.progress = 0;
+    }
+
+    root.addEventListener('pointerdown', function (e) {
+      if (e.target.closest('a, button, input, textarea')) return; /* never hijack CTAs */
+      if (state === 'star') detonate();
+      else if (state === 'done') { state = 'star'; setTimeout(detonate, 350); }
+    });
+
+    var whiteSprite = dotSprite('#FFFFFF');
+    var blueSprite = dotSprite('#9FD8FF');
+
+    /* the pre-blast star: breathing white-blue point, flares near cursor */
+    function drawStar(t) {
+      var w = fxCanvas.width, h = fxCanvas.height;
+      var cx = w / 2, cy = h / 2;
+      var breathe = 1 + Math.sin(t * 2.4) * 0.18;
+      var dist = Math.hypot(mouse.x - cx, mouse.y - cy);
+      var flare = Math.max(0, 1 - dist / (260 * dpr()));
+      var R = (10 + flare * 22) * breathe * dpr();
+
+      ctx0(fx, function () {
+        fx.globalAlpha = 0.85;
+        var gs = R * 6;
+        fx.drawImage(blueSprite, cx - gs / 2, cy - gs / 2, gs, gs);
+        fx.globalAlpha = 1;
+        fx.drawImage(whiteSprite, cx - R, cy - R, R * 2, R * 2);
+        /* pulsing hint ring */
+        var rp = (t % 2.2) / 2.2;
+        fx.globalAlpha = (1 - rp) * 0.35;
+        fx.strokeStyle = '#9FD8FF';
+        fx.lineWidth = 1.5 * dpr();
+        fx.beginPath();
+        fx.arc(cx, cy, R * (1.6 + rp * 2.2), 0, Math.PI * 2);
+        fx.stroke();
+      });
+    }
+
+    function ctx0(c, fn) { c.save(); fn(); c.restore(); }
+
+    /* flash + shockwave + star collapse, then hand off to the eye */
+    function drawFiring(t) {
+      var w = fxCanvas.width, h = fxCanvas.height;
+      var cx = w / 2, cy = h / 2;
+      var el = t - fire.t0;
+
+      /* white flash: 0 -> 0.35s */
+      if (el < 0.5) {
+        var fa = el < 0.12 ? el / 0.12 : Math.max(0, 1 - (el - 0.12) / 0.38);
+        var fg = fx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.7);
+        fg.addColorStop(0, 'rgba(255,255,255,' + (fa * 0.95) + ')');
+        fg.addColorStop(0.25, 'rgba(190,225,255,' + (fa * 0.55) + ')');
+        fg.addColorStop(1, 'rgba(120,170,255,0)');
+        fx.fillStyle = fg;
+        fx.fillRect(0, 0, w, h);
+      }
+
+      /* collapsing star core (survives inside the flash) */
+      if (el < 0.9) {
+        var shrink = Math.max(0.1, 1 - el * 1.4);
+        var R = 26 * shrink * dpr();
+        fx.globalAlpha = Math.min(1, 1.2 - el);
+        fx.drawImage(whiteSprite, cx - R, cy - R, R * 2, R * 2);
+        fx.globalAlpha = 1;
+      }
+
+      /* shockwave: 0.15s -> 1.4s */
+      if (el > 0.12 && el < 1.5) {
+        var sp = (el - 0.12) / 1.38;
+        var sr = ease(sp) * Math.max(w, h) * 0.72;
+        fx.globalAlpha = (1 - sp) * 0.9;
+        fx.strokeStyle = '#CFE8FF';
+        fx.lineWidth = (3.5 - sp * 2.5) * dpr();
+        fx.beginPath(); fx.arc(cx, cy, sr, 0, Math.PI * 2); fx.stroke();
+        fx.globalAlpha = (1 - sp) * 0.4;
+        fx.lineWidth = (14 - sp * 10) * dpr();
+        fx.strokeStyle = '#7FB8FF';
+        fx.beginPath(); fx.arc(cx, cy, sr * 0.96, 0, Math.PI * 2); fx.stroke();
+        fx.globalAlpha = 1;
+      }
+
+      /* debris drive: blast begins inside the flash, settles over ~2.4s */
+      if (el > 0.2) {
+        eye.progress = Math.min(1, (el - 0.2) / 2.4);
+      }
+      if (eye.progress >= 1 && state === 'firing') {
+        state = 'done';
+        if (rings) rings.show();
+        if (opts.onRemnant) opts.onRemnant();
+      }
+    }
+
+    function ease(p) { return 1 - Math.pow(1 - p, 3); }
+
+    if (REDUCED) {
+      stars.draw(1.2, 0.016);
+      eye.drawStatic();
+      if (rings) { rings.show(); rings.draw(1, 0.016); }
+      return { detonate: function () {}, eye: eye, stars: stars, rings: rings };
+    }
+
+    var tickFn = function (t, dt) {
+      stars.draw(t, dt);
+      fx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+      if (state === 'star') drawStar(t);
+      else if (fire) drawFiring(t);
+      eye.draw(t, dt);
+      if (rings) rings.draw(t, dt);
+    };
+    onTick(tickFn);
+
+    /* auto-detonate for passive visitors */
+    var auto = setTimeout(function () { if (state === 'star') detonate(); }, opts.autoDelay || 2600);
+
+    return {
+      detonate: detonate,
+      eye: eye, stars: stars, rings: rings,
+      destroy: function () { offTick(tickFn); clearTimeout(auto); }
+    };
+  }
 
   function mount(root, opts) {
     opts = opts || {};
@@ -633,11 +803,12 @@
 
   window.ColCore = {
     mount: mount,
+    supernova: supernova,
     decode: decode,
     reveal: reveal,
     trackBox: trackBox,
     reduced: REDUCED,
-    version: '1.0.0'
+    version: '1.1.0'
   };
 
 })();

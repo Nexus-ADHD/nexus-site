@@ -358,15 +358,15 @@
       });
       var show = function (el) { el.style.opacity = '1'; el.style.transform = 'none'; };
 
-      var core = ColCore.mount(hero, {
-        onAssembled: function () {
+      var core = ColCore.supernova(hero, {
+        autoDelay: 2600,
+        onRemnant: function () {
           ColCore.decode(document.getElementById('wordmark')).play();
           setTimeout(function () { show(h1); }, 500);
           setTimeout(function () { show(sub); }, 900);
           setTimeout(function () { show(cta); }, 1300);
         }
       });
-      core.play(2.4);
     } else if (window.ColCore) {
       /* reduced motion: static composed frame, content visible */
       ColCore.mount(hero, {});
