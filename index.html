@@ -54,7 +54,7 @@
     pointer-events: none;
     background:
       radial-gradient(ellipse 62% 52% at 50% 58%, rgba(6,6,12,0.52), transparent 72%),
-      linear-gradient(180deg, rgba(6,6,12,0.35) 0%, transparent 30%, transparent 70%, rgba(6,6,12,0.55) 100%);
+      linear-gradient(180deg, rgba(6,6,12,0.35) 0%, transparent 30%, transparent 55%, rgba(6,6,12,0.85) 88%, #06060C 100%);
   }
   main { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 24px; }
 
@@ -129,7 +129,8 @@
 
   /* ---------- film ---------- */
   .film { display: flex; justify-content: center; padding: 24px 0 48px; }
-  .film video {
+  .film-frame { position: relative; display: inline-block; }
+  .film-frame video {
     display: block;
     width: 100%;
     max-width: 320px;
@@ -162,7 +163,7 @@
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--teal);
     margin-bottom: 14px;
   }
   .row-text h2 {
@@ -286,7 +287,9 @@
   </section>
 
   <section class="film reveal">
-    <video src="preview.mp4" poster="preview-poster.jpg" muted loop playsinline preload="metadata" aria-label="A 30 second capture of Nexus in use"></video>
+    <div class="film-frame" id="film-frame">
+      <video src="preview.mp4" poster="preview-poster.jpg" muted loop playsinline preload="metadata" aria-label="A 30 second capture of Nexus in use"></video>
+    </div>
   </section>
 
   <div class="rows">
@@ -416,6 +419,25 @@
       }, { threshold: 0.4 }).observe(vid);
     } else if (vid) {
       vid.setAttribute('autoplay', '');
+    }
+
+    /* ---------- teal HUD chrome: tracking reticles on media ---------- */
+    if (window.ColCore && !reduced && 'IntersectionObserver' in window) {
+      var frames = [
+        { el: document.getElementById('film-frame'), label: 'CAPTURE' },
+        { el: document.querySelectorAll('.row-media')[0], label: 'IDENTITY' },
+        { el: document.querySelectorAll('.row-media')[1], label: 'HABITS' },
+        { el: document.querySelectorAll('.row-media')[2], label: 'VOICE' }
+      ];
+      frames.forEach(function (f) {
+        if (!f.el) return;
+        var box = ColCore.trackBox(f.el, { label: f.label });
+        new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) { box.show(); obs.disconnect(); }
+          });
+        }, { threshold: 0.35 }).observe(f.el);
+      });
     }
 
     /* ---------- count-up on the research number ---------- */
