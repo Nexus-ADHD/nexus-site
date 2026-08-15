@@ -47,6 +47,15 @@
     z-index: 0;
     pointer-events: none;
   }
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 62% 52% at 50% 58%, rgba(6,6,12,0.52), transparent 72%),
+      linear-gradient(180deg, rgba(6,6,12,0.35) 0%, transparent 30%, transparent 70%, rgba(6,6,12,0.55) 100%);
+  }
   main { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 24px; }
 
   /* scroll reveal */
@@ -269,7 +278,7 @@
 
 <main>
   <section class="hero" id="hero">
-    <img id="core-poster" src="core-poster.jpg" alt="" aria-hidden="true">
+    <div class="hero-scrim" aria-hidden="true"></div>
     <div class="wordmark" id="wordmark">Nexus</div>
     <h1 id="hero-h1">Who are you becoming?</h1>
     <p class="sub" id="hero-sub">Built for the ADHD mind. You answer out loud — Nexus builds itself around your answer.</p>
@@ -339,37 +348,48 @@
   <div class="fine">Built by <a href="https://thecircleoflight.net">Circle of Light</a> — spirituality into action.</div>
 </footer>
 
-<script src="gsap.min.js"></script>
 <script src="col-core-engine.js"></script>
+<script src="col-space.js"></script>
 <script>
   (function () {
-    /* ---------- The Core: hero boot sequence ---------- */
+    /* ---------- The Supernova Plate: ouroboros hero ---------- */
     var hero = document.getElementById('hero');
     var h1 = document.getElementById('hero-h1');
     var sub = document.getElementById('hero-sub');
     var cta = document.getElementById('hero-cta');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (window.ColCore && !ColCore.reduced) {
-      /* JS drives the sequence; without JS everything is simply visible */
+    var portrait = window.matchMedia('(max-aspect-ratio: 3/4)').matches;
+    var loopSrc = portrait ? 'ouro-916-loop.mp4' : 'ouro-169-loop.mp4';
+    var posterSrc = portrait ? 'ouro-916-poster.jpg' : 'ouro-169-poster.jpg';
+
+    if (window.ColSpace && !reduced) {
+      /* JS drives the sequence; without JS the poster + content simply render */
       [h1, sub, cta].forEach(function (el) {
         el.style.opacity = '0';
-        el.style.transform = 'translateY(16px)';
-        el.style.transition = 'opacity 700ms cubic-bezier(0.2,0,0,1), transform 700ms cubic-bezier(0.2,0,0,1)';
+        el.style.transform = 'translateY(14px)';
+        el.style.transition = 'opacity 800ms cubic-bezier(0.2,0,0,1), transform 800ms cubic-bezier(0.2,0,0,1)';
       });
       var show = function (el) { el.style.opacity = '1'; el.style.transform = 'none'; };
 
-      var core = ColCore.supernova(hero, {
-        autoDelay: 2600,
-        onRemnant: function () {
-          ColCore.decode(document.getElementById('wordmark')).play();
-          setTimeout(function () { show(h1); }, 500);
-          setTimeout(function () { show(sub); }, 900);
-          setTimeout(function () { show(cta); }, 1300);
+      ColSpace.mount(hero, {
+        video: loopSrc,
+        poster: posterSrc,
+        onReady: function () {
+          if (window.ColCore) ColCore.decode(document.getElementById('wordmark')).play();
+          setTimeout(function () { show(h1); }, 600);
+          setTimeout(function () { show(sub); }, 1000);
+          setTimeout(function () { show(cta); }, 1500);
         }
       });
-    } else if (window.ColCore) {
-      /* reduced motion: static composed frame, content visible */
-      ColCore.mount(hero, {});
+    } else {
+      /* reduced motion or engine missing: static plate, everything visible */
+      var img = document.createElement('img');
+      img.src = posterSrc;
+      img.alt = '';
+      img.setAttribute('aria-hidden', 'true');
+      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;';
+      hero.insertBefore(img, hero.firstChild);
     }
 
     /* ---------- scroll reveals ---------- */
