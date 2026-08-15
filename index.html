@@ -38,25 +38,14 @@
     line-height: 22px;
     overflow-x: hidden;
   }
-  #bg {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    height: 100vh;
-    width: auto;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-    pointer-events: none;
-    mix-blend-mode: screen;
-    -webkit-mask-image: radial-gradient(ellipse 55% 48% at center, black 40%, transparent 72%);
-    mask-image: radial-gradient(ellipse 55% 48% at center, black 40%, transparent 72%);
-  }
-  #scrim {
-    position: fixed;
+  #core-poster {
+    position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     z-index: 0;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(2,2,8,0.50) 0%, rgba(2,2,8,0.66) 40%, rgba(2,2,8,0.72) 100%);
   }
   main { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 0 24px; }
 
@@ -73,7 +62,11 @@
 
   /* ---------- hero ---------- */
   .hero {
-    min-height: 92vh;
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -81,13 +74,16 @@
     text-align: center;
     padding: 96px 0 48px;
   }
+  .hero .wordmark, .hero h1, .hero .sub, .hero .cta { position: relative; z-index: 3; }
   .wordmark {
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.34em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--teal);
     margin-bottom: 24px;
+    font-family: 'IBM Plex Mono', monospace;
+    perspective: 600px;
   }
   h1 {
     font-family: 'Fraunces', serif;
@@ -271,15 +267,13 @@
 </head>
 <body>
 
-<video id="bg" src="bg-eye-v2.mp4" poster="bg-eye-v2-poster.jpg" autoplay muted loop playsinline aria-hidden="true"></video>
-<div id="scrim" aria-hidden="true"></div>
-
 <main>
-  <section class="hero">
-    <div class="wordmark reveal">Nexus</div>
-    <h1 class="reveal">Who are you becoming?</h1>
-    <p class="sub reveal">Built for the ADHD mind. You answer out loud — Nexus builds itself around your answer.</p>
-    <a class="cta reveal" href="https://apps.apple.com/us/app/nexus-pro/id6761865566">Nexus for iPhone</a>
+  <section class="hero" id="hero">
+    <img id="core-poster" src="core-poster.jpg" alt="" aria-hidden="true">
+    <div class="wordmark" id="wordmark">Nexus</div>
+    <h1 id="hero-h1">Who are you becoming?</h1>
+    <p class="sub" id="hero-sub">Built for the ADHD mind. You answer out loud — Nexus builds itself around your answer.</p>
+    <a class="cta" id="hero-cta" href="https://apps.apple.com/us/app/nexus-pro/id6761865566">Nexus for iPhone</a>
   </section>
 
   <section class="film reveal">
@@ -345,14 +339,40 @@
   <div class="fine">Built by <a href="https://thecircleoflight.net">Circle of Light</a> — spirituality into action.</div>
 </footer>
 
+<script src="gsap.min.js"></script>
+<script src="col-core-engine.js"></script>
 <script>
   (function () {
-    var bg = document.getElementById('bg');
-    if (bg && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      bg.removeAttribute('autoplay');
-      bg.pause();
+    /* ---------- The Core: hero boot sequence ---------- */
+    var hero = document.getElementById('hero');
+    var h1 = document.getElementById('hero-h1');
+    var sub = document.getElementById('hero-sub');
+    var cta = document.getElementById('hero-cta');
+
+    if (window.ColCore && !ColCore.reduced) {
+      /* JS drives the sequence; without JS everything is simply visible */
+      [h1, sub, cta].forEach(function (el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(16px)';
+        el.style.transition = 'opacity 700ms cubic-bezier(0.2,0,0,1), transform 700ms cubic-bezier(0.2,0,0,1)';
+      });
+      var show = function (el) { el.style.opacity = '1'; el.style.transform = 'none'; };
+
+      var core = ColCore.mount(hero, {
+        onAssembled: function () {
+          ColCore.decode(document.getElementById('wordmark')).play();
+          setTimeout(function () { show(h1); }, 500);
+          setTimeout(function () { show(sub); }, 900);
+          setTimeout(function () { show(cta); }, 1300);
+        }
+      });
+      core.play(2.4);
+    } else if (window.ColCore) {
+      /* reduced motion: static composed frame, content visible */
+      ColCore.mount(hero, {});
     }
 
+    /* ---------- scroll reveals ---------- */
     var reveals = document.querySelectorAll('.reveal');
     if ('IntersectionObserver' in window) {
       var ro = new IntersectionObserver(function (entries) {
@@ -365,6 +385,7 @@
       reveals.forEach(function (el) { el.classList.add('in'); });
     }
 
+    /* ---------- film video: play in view only ---------- */
     var vid = document.querySelector('.film video');
     if (vid && 'IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
@@ -377,29 +398,8 @@
       vid.setAttribute('autoplay', '');
     }
 
+    /* ---------- count-up on the research number ---------- */
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    /* subtle parallax drift on story-row media */
-    if (!reduced) {
-      var media = document.querySelectorAll('.row-media');
-      var ticking = false;
-      var drift = function () {
-        ticking = false;
-        var mid = window.innerHeight / 2;
-        media.forEach(function (el) {
-          var r = el.getBoundingClientRect();
-          var off = (r.top + r.height / 2 - mid) / mid; /* -1..1-ish */
-          el.style.transform = 'translateY(' + (off * -14).toFixed(1) + 'px)';
-        });
-      };
-      var onScroll = function () {
-        if (!ticking) { ticking = true; requestAnimationFrame(drift); }
-      };
-      window.addEventListener('scroll', onScroll, { passive: true });
-      drift();
-    }
-
-    /* count-up on the research number */
     var days = document.querySelector('.proof .days');
     if (days) {
       var target = parseInt(days.textContent, 10) || 66;
