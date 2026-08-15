@@ -256,11 +256,22 @@
   }
   footer a:hover { color: var(--text-secondary); }
   footer .fine { color: var(--text-muted); font-size: 13px; margin-top: 16px; }
+
+  /* ---------- motion polish ---------- */
+  @keyframes ctaPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.14); }
+    50% { box-shadow: 0 0 36px rgba(229, 186, 110, 0.5); }
+  }
+  .cta { animation: ctaPulse 3.2s ease-in-out infinite; }
+  .row-media { will-change: transform; }
+  @media (prefers-reduced-motion: reduce) {
+    .cta { animation: none; }
+  }
 </style>
 </head>
 <body>
 
-<video id="bg" src="bg-eye.mp4" poster="bg-eye-poster.jpg" autoplay muted loop playsinline aria-hidden="true"></video>
+<video id="bg" src="bg-eye-v2.mp4" poster="bg-eye-v2-poster.jpg" autoplay muted loop playsinline aria-hidden="true"></video>
 <div id="scrim" aria-hidden="true"></div>
 
 <main>
@@ -364,6 +375,53 @@
       }, { threshold: 0.4 }).observe(vid);
     } else if (vid) {
       vid.setAttribute('autoplay', '');
+    }
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* subtle parallax drift on story-row media */
+    if (!reduced) {
+      var media = document.querySelectorAll('.row-media');
+      var ticking = false;
+      var drift = function () {
+        ticking = false;
+        var mid = window.innerHeight / 2;
+        media.forEach(function (el) {
+          var r = el.getBoundingClientRect();
+          var off = (r.top + r.height / 2 - mid) / mid; /* -1..1-ish */
+          el.style.transform = 'translateY(' + (off * -14).toFixed(1) + 'px)';
+        });
+      };
+      var onScroll = function () {
+        if (!ticking) { ticking = true; requestAnimationFrame(drift); }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      drift();
+    }
+
+    /* count-up on the research number */
+    var days = document.querySelector('.proof .days');
+    if (days) {
+      var target = parseInt(days.textContent, 10) || 66;
+      if (reduced || !('IntersectionObserver' in window)) {
+        days.textContent = String(target);
+      } else {
+        days.textContent = '0';
+        new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            obs.disconnect();
+            var t0 = null;
+            var step = function (ts) {
+              if (t0 === null) t0 = ts;
+              var p = Math.min((ts - t0) / 1200, 1);
+              days.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+              if (p < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+          });
+        }, { threshold: 0.5 }).observe(days);
+      }
     }
   })();
 </script>
