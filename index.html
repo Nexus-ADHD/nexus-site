@@ -38,6 +38,15 @@
     line-height: 22px;
     overflow-x: hidden;
   }
+  #col-rain {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+  }
   #core-poster {
     position: absolute;
     inset: 0;
@@ -277,6 +286,8 @@
 </head>
 <body>
 
+<canvas id="col-rain" aria-hidden="true"></canvas>
+
 <main>
   <section class="hero" id="hero">
     <div class="hero-scrim" aria-hidden="true"></div>
@@ -353,8 +364,14 @@
 
 <script src="col-core-engine.js"></script>
 <script src="col-space.js"></script>
+<script src="col-rain.js"></script>
 <script>
   (function () {
+    /* ---------- The app's Matrix Rain, ambient behind everything ---------- */
+    if (window.ColRain) {
+      ColRain.mount(document.getElementById('col-rain'));
+    }
+
     /* ---------- The Supernova Plate: ouroboros hero ---------- */
     var hero = document.getElementById('hero');
     var h1 = document.getElementById('hero-h1');
