@@ -245,7 +245,7 @@
     }
 
     var resizeT = 0;
-    function onResize() {
+    function rebuildSoon() {
       clearTimeout(resizeT);
       resizeT = setTimeout(function () {
         if (destroyed) return;
@@ -253,10 +253,25 @@
         if (reduceMotion) frame(FROZEN_TIME_MS);
       }, 150);
     }
+    function onResize() { rebuildSoon(); }
 
     build();
     startLoops();
     window.addEventListener('resize', onResize);
+    // Track the canvas's own box too: a parent section can grow after late
+    // content (images) loads without any window resize.
+    var ro = null;
+    if (window.ResizeObserver) {
+      var lastW = W, lastH = H;
+      ro = new ResizeObserver(function () {
+        var r = canvas.getBoundingClientRect();
+        if (Math.abs(r.width - lastW) > 1 || Math.abs(r.height - lastH) > 1) {
+          lastW = r.width; lastH = r.height;
+          rebuildSoon();
+        }
+      });
+      ro.observe(canvas);
+    }
 
     return {
       destroy: function () {
@@ -264,6 +279,7 @@
         cancelAnimationFrame(rafId);
         clearInterval(swapId);
         clearTimeout(resizeT);
+        if (ro) ro.disconnect();
         window.removeEventListener('resize', onResize);
       }
     };
