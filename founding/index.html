@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Founding 100</title>
+  <meta name="description" content="The first 100 people. Twenty dollars a month, and it stays twenty while you keep it." />
+  <meta name="color-scheme" content="dark" />
+  <style>
+    :root{--void:#06060C;--surface:#0e1018;--line:rgba(255,255,255,.12);--text:#fff;--muted:#E8EEF6;--dim:#9AA3B5;--teal:#5FE0EA;--gold:#E5BA6E;}
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--void);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;font-size:18px;
+      background-image:radial-gradient(900px 500px at 80% -10%, rgba(95,224,234,.12), transparent 55%),radial-gradient(700px 400px at 0% 0%, rgba(229,186,110,.08), transparent 50%);}
+    .wrap{max-width:640px;margin:0 auto;padding:28px 22px 64px;}
+    .eyebrow{letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-size:13px;font-weight:600;margin:0 0 12px;}
+    h1{font-size:clamp(32px,7vw,46px);line-height:1.08;margin:0 0 12px;}
+    .count{font-size:22px;color:var(--teal);margin:0 0 18px;}
+    p{color:var(--muted);margin:0 0 14px;}
+    ul{margin:0 0 16px;padding-left:20px;color:var(--muted);}
+    li{margin:0 0 6px;}
+    .terms{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:16px;}
+    label{display:block;font-size:14px;color:var(--dim);margin:0 0 8px;}
+    input[type=email],input[type=tel]{width:100%;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:17px;margin-bottom:14px;}
+    input:focus{outline:2px solid var(--teal);outline-offset:2px;}
+    .check{display:flex;gap:12px;align-items:flex-start;margin:0 0 16px;font-size:15px;color:var(--muted);}
+    button{width:100%;background:#fff;color:#06060C;font-weight:700;font-size:17px;padding:16px;border:0;border-radius:999px;cursor:pointer;}
+    button:disabled{opacity:.45;cursor:not-allowed;}
+    .ok{display:none;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;}
+    .note{color:var(--dim);font-size:14px;}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <p class="eyebrow">Circle of Light</p>
+    <h1>Twenty dollars a month. It stays twenty.</h1>
+    <p class="count" id="count">Checking spots…</p>
+    <p>The first hundred people get the whole suite for $20 a month, locked while they keep paying.</p>
+    <ul>
+      <li>Nexus, when the $20 plan is in the App Store</li>
+      <li>The email notes and text reminders</li>
+      <li>The Living Brain, and a Substack comp he grants by hand</li>
+      <li>A first look when the clothes drop</li>
+      <li>Later products, at the same $20, inside the limit below</li>
+    </ul>
+    <p>Not included: the live co-host, and the private morning paper.</p>
+    <div class="terms">
+      <p>Your price is $20 a month, and it stays $20 while you keep this membership. If you cancel, the founding price ends.</p>
+      <p>There is no free month. The public app still has its own free week, at $14.99 a month or $99.99 a year. This $20 is a separate membership, not a discount on that price.</p>
+      <p>AI and agent use is included up to the amount your payment brings in that month, after the store's fee. That is $14 until the fee is confirmed, and it will not be higher than what we actually receive. When you reach it, included AI pauses until your next bill. We will not charge you extra. The rest of your membership stays.</p>
+      <p>This is for you. One person. No shared logins, no bots, no resale.</p>
+      <p>This page claims a spot and puts you on the list. It does not take payment and it does not unlock the app. The $20 is billed in the App Store when that plan is there.</p>
+    </div>
+    <form id="signup" data-closed="open" style="margin-top:22px">
+      <input type="hidden" id="source" value="stranger" />
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+      <label class="check">
+        <input id="sms" type="checkbox" />
+        <span>Also text me. Optional. Reply YES to confirm, STOP to quit. Message and data rates may apply.</span>
+      </label>
+      <div id="phone-wrap" hidden>
+        <label for="phone">Mobile number</label>
+        <input id="phone" type="tel" autocomplete="tel" placeholder="555 555 5555" />
+      </div>
+      <button type="submit" id="go">Claim a spot</button>
+      <p class="note">Unsubscribe any time by replying to the email.</p>
+    </form>
+    <div class="ok" id="thanks" role="status"></div>
+  </main>
+  <script>
+    const API = 'https://wgxpdiyzzaapeawzajdo.supabase.co/functions/v1/founding-100';
+    const form = document.getElementById('signup');
+    const thanks = document.getElementById('thanks');
+    const countEl = document.getElementById('count');
+    fetch(API + '/count', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((data) => {
+        countEl.textContent = data.count + ' of ' + data.cap + ' spots claimed';
+        if (data.closed) {
+          form.dataset.closed = 'closed';
+          form.querySelector('button').disabled = true;
+          form.querySelector('button').textContent = 'Closed at 100';
+        }
+      })
+      .catch(() => { countEl.textContent = 'Spots could not be loaded. Try again.'; });
+    document.getElementById('sms').addEventListener('change', () => {
+      document.getElementById('phone-wrap').hidden = !document.getElementById('sms').checked;
+    });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = document.getElementById('go');
+      button.disabled = true;
+      const res = await fetch(API + '/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('email').value,
+          sms: document.getElementById('sms').checked,
+          phone: document.getElementById('phone').value,
+          source: document.getElementById('source').value
+        })
+      });
+      const data = await res.json().catch(() => ({}));
+      form.hidden = true;
+      thanks.style.display = 'block';
+      thanks.textContent = data.ok
+        ? 'Spot claimed. Check your email. The $20 starts in the App Store, not here.'
+        : (data.error || 'That did not save. Try again.');
+    });
+  </script>
+</body>
+</html>
