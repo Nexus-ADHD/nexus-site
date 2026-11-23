@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>The AI Bubble Meter | Consciousness AI</title>
+  <meta name="description" content="One needle and a list of sourced facts on whether the AI money is flowing or slowing. Our own rules, every number with its receipt. Here to inform, not to scare.">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#06060C">
+  <link rel="canonical" href="https://nexus.thecircleoflight.net/bubble/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The AI Bubble Meter">
+  <meta property="og:description" content="Is the AI money flowing or slowing? One needle, every move sourced, our own rules written out. Here to inform, not to scare.">
+  <meta property="og:url" content="https://nexus.thecircleoflight.net/bubble/">
+  <meta property="og:image" content="https://nexus.thecircleoflight.net/links/col-lg.jpg">
+  <link rel="icon" href="../links/ai.jpg">
+  <link rel="apple-touch-icon" href="../links/col-lg.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--void:#06060C;--card:rgba(16,18,28,.78);--line:rgba(255,255,255,.10);--line-hi:rgba(229,186,110,.55);--text:#FFFFFF;--muted:#C9D1DE;--dim:#9AA3B5;--gold:#E5BA6E;--gold2:#FFD98A;--teal:#5FE0EA;--closer:#FFB347;--further:#2FE0B5}
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%}
+    body{margin:0;min-height:100vh;color:var(--text);background-color:var(--void);
+      background-image:radial-gradient(700px 420px at 50% -8%,rgba(229,186,110,.10),transparent 60%),radial-gradient(600px 500px at 100% 40%,rgba(95,224,234,.07),transparent 60%),url("../links/bg.jpg");
+      background-size:auto,auto,cover;background-position:center top;
+      font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased}
+    .wrap{max-width:1120px;margin:0 auto;padding:calc(28px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom))}
+    a{color:var(--teal)}
+    a.back{display:inline-block;margin:0 0 18px;color:var(--dim);text-decoration:none;font-size:15px}
+    header{text-align:center;margin-bottom:22px}
+    .eyebrow{margin:0 0 8px;color:var(--gold);font-weight:600;font-size:14px;letter-spacing:.22em;text-transform:uppercase}
+    h1{margin:0 0 10px;font-size:32px;line-height:1.1;font-weight:800;letter-spacing:-.01em}
+    .lede{margin:0 auto;max-width:560px;color:var(--muted);font-size:17px}
+    .power{margin:14px 0 0;color:var(--gold2);font-weight:800;font-size:17px;letter-spacing:.14em;text-transform:uppercase}
+    .power span{display:block;color:var(--muted);font-weight:600;font-size:14px;letter-spacing:.16em;margin-top:4px}
+    .stamp{display:inline-block;margin-top:14px;padding:7px 14px;border-radius:999px;border:1px solid var(--line-hi);color:var(--gold2);font-weight:600;font-size:14px;letter-spacing:.06em}
+    .stamp.old{color:var(--closer);border-color:var(--closer)}
+    .grid{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+    .grid > *{min-width:0}
+    .fact h3,.fact p,.pair p,details li{overflow-wrap:anywhere}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 18px 20px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    h2{margin:0 0 12px;color:var(--teal);font-weight:700;font-size:14px;letter-spacing:.2em;text-transform:uppercase}
+    #gauge{display:block;width:100%;height:auto;max-width:560px;margin:0 auto}
+    #needle{transform-box:view-box;transform-origin:300px 260px;transition:transform 1.4s cubic-bezier(.2,.9,.25,1.05)}
+    #swing{transform-box:view-box;transform-origin:300px 260px;transition:transform .7s cubic-bezier(.3,1.45,.5,1)}
+    #sway{transform-box:view-box;transform-origin:300px 260px;animation:sway 5.2s ease-in-out infinite alternate}
+    @keyframes sway{from{transform:rotate(-.7deg)}to{transform:rotate(.7deg)}}
+    #side{animation:breathe 6s ease-in-out infinite alternate}
+    @keyframes breathe{from{opacity:.2}to{opacity:.62}}
+    .ends{display:flex;justify-content:space-between;gap:8px;margin:2px 0 0;font-weight:700;font-size:14px;letter-spacing:.08em}
+    .ends .l{color:var(--further)}.ends .r{color:var(--closer);text-align:right}
+    .push{min-height:22px;text-align:center;font-weight:700;font-size:15px;letter-spacing:.08em;opacity:0;transition:opacity .35s}
+    .push.on{opacity:1}.push.c{color:var(--closer)}.push.f{color:var(--further)}
+    .read{display:flex;align-items:baseline;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:2px}
+    .read .n{font-weight:800;font-size:72px;line-height:1}
+    .read .n small{font-size:22px;color:var(--dim);font-weight:700;margin-left:4px}
+    .read .band{font-weight:800;font-size:26px;letter-spacing:.02em}
+    .honest{margin:10px 0 0;text-align:center;color:var(--muted);font-size:16px}
+    .tally{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+    .tally div{border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center;background:rgba(3,4,10,.5)}
+    .tally small{display:block;color:var(--dim);font-weight:700;font-size:14px;letter-spacing:.04em}
+    .tally b{display:block;font-weight:800;font-size:26px;line-height:1.15}
+    .tally .up b{color:var(--closer)}.tally .dn b{color:var(--further)}
+    .how{margin:14px 0 0;color:var(--muted);font-size:16px}
+    .fact{border-top:1px solid var(--line);padding:18px 0 16px;transition:background .6s,box-shadow .6s}
+    .fact:first-of-type{border-top:none;padding-top:4px}
+    .fact.now{box-shadow:inset 4px 0 0 var(--gold);padding-left:12px}
+    .meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-bottom:8px}
+    .badge{font-weight:800;font-size:16px;border-radius:9px;padding:5px 10px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+    .fact.closer .badge{color:var(--closer);border-color:rgba(255,179,71,.6);background:rgba(255,179,71,.08)}
+    .fact.further .badge{color:var(--further);border-color:rgba(47,224,181,.6);background:rgba(47,224,181,.08)}
+    .fact.watching .badge{color:var(--gold2)}
+    .date{color:var(--gold2);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase}
+    .rule{color:var(--teal);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;border:1px solid rgba(95,224,234,.4);border-radius:6px;padding:2px 7px}
+    .fact h3{margin:0 0 8px;font-size:19px;line-height:1.3;font-weight:700}
+    .fact p{margin:0 0 8px;color:var(--muted);font-size:16px}
+    .fact p b{display:block;color:var(--teal);font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1px}
+    .fact p.do b{color:var(--gold2)}.fact p.why b{color:var(--dim)}.fact p.why{color:var(--dim)}
+    .src{color:var(--dim);font-size:15px}
+    .src a{margin-right:10px;white-space:nowrap}
+    details{margin-top:8px}
+    summary{cursor:pointer;color:var(--gold2);font-weight:600;font-size:15px}
+    details ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+    details li{border-left:3px solid var(--line-hi);padding:2px 0 2px 12px;color:var(--muted);font-size:15px}
+    details li cite{display:block;font-style:normal;color:var(--dim);font-size:14px;margin-top:2px}
+    details li .about{color:var(--dim);font-size:14px}
+    .pair{display:grid;gap:6px;padding:12px 0;border-top:1px solid var(--line)}
+    .pair:first-of-type{border-top:none}
+    .pair p{margin:0;color:var(--muted);font-size:16px}
+    .pair b{font-weight:700;color:var(--text)}
+    .pair .c i,.pair .f i{font-style:normal;margin-right:6px}
+    .pair .c i{color:var(--closer)}.pair .f i{color:var(--further)}
+    .pair em{font-style:normal;color:var(--dim);font-size:14px;margin-left:6px;white-space:nowrap}
+    ul.plain{margin:0 0 6px;padding-left:20px;color:var(--muted);font-size:16px}
+    ul.plain li{margin-bottom:6px}
+    h3.sub{margin:18px 0 8px;font-size:16px;font-weight:700;color:var(--text)}
+    footer{margin-top:26px;text-align:center;color:var(--dim);font-size:14px}
+    footer p{margin:0 auto 8px;max-width:640px}
+    noscript p{color:var(--closer);text-align:center}
+    .wait .read,.wait .tally,.wait .ends,.wait #gauge{visibility:hidden}
+    @media (min-width:980px){
+      h1{font-size:40px}
+      .grid{grid-template-columns:440px minmax(0,1fr);align-items:start}
+      .left{position:sticky;top:18px}
+      .rules{grid-column:1 / -1}
+      .rules .pairs{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+    }
+    @media (prefers-reduced-motion:reduce){#sway,#side{animation:none}#needle,#swing{transition:none}}
+  </style>
+</head>
+<body class="wait">
+  <main class="wrap">
+    <a class="back" href="../links/">&larr; All links</a>
+    <header>
+      <p class="eyebrow">Consciousness AI &middot; Circle of Light</p>
+      <h1>The AI Bubble Meter</h1>
+      <p class="lede">Is the AI money flowing or slowing? One needle, moved only by dated facts with a source. This is our own meter and these are our own rules, written out below so you can argue with them.</p>
+      <p class="power">Knowledge is power<span>Here to inform, not to scare</span></p>
+      <p class="stamp" id="stamp">Loading the facts</p>
+    </header>
+    <noscript><p>This page needs JavaScript to draw the meter and the list of facts.</p></noscript>
+
+    <div class="grid">
+      <section class="panel left" aria-label="The needle">
+        <h2>The needle</h2>
+        <svg id="gauge" viewBox="0 0 600 290" role="img" aria-label="The meter"></svg>
+        <div class="ends"><span class="l">&#9664; Further from a pop</span><span class="r">Closer to a pop &#9654;</span></div>
+        <div class="push" id="push" aria-hidden="true"></div>
+        <div class="read"><span class="n"><span id="num"></span><small>/100</small></span><span class="band" id="band"></span></div>
+        <p class="honest" id="honest"></p>
+        <div class="tally"><div class="up"><small>&#9650; Closer</small><b id="tUp">0</b></div><div class="dn"><small>&#9660; Further</small><b id="tDn">0</b></div><div><small>At zero</small><b id="tWt">0</b></div></div>
+        <p class="how" id="how"></p>
+      </section>
+
+      <section class="panel" aria-label="The facts">
+        <h2 id="feedhead">The facts, newest first</h2>
+        <div id="feed"></div>
+      </section>
+
+      <section class="panel rules" aria-label="Our rules">
+        <h2>Our rules</h2>
+        <p class="how" style="margin-top:0">Six pairs. Every rule has a mirror sized the same way, and a fact counts the same number of points in either direction. The needle starts at 50.</p>
+        <div class="pairs" id="pairs"></div>
+        <h3 class="sub">How far a fact moves the needle</h3>
+        <ul class="plain" id="sizes"></ul>
+        <h3 class="sub">Guard rails</h3>
+        <ul class="plain" id="guards"></ul>
+      </section>
+    </div>
+
+    <footer>
+      <p>Not financial advice. Nothing on this page tells you to buy or sell anything.</p>
+      <p>Facts are added by hand after reading the source page. If no new fact has been checked for more than three days, the date at the top says so.</p>
+      <p>Disclosure: this meter is kept with the help of AI tools, including Claude, made by Anthropic. Anthropic appears in some of these facts.</p>
+      <p><a href="https://www.youtube.com/@masteringai137" rel="noopener">Consciousness AI on YouTube</a> &middot; <a href="../links/">All Circle of Light links</a></p>
+    </footer>
+  </main>
+  <script src="score.js"></script>
+  <script src="bubble-data.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    const $ = id => document.getElementById(id), data = window.BUBBLE, S = window.BubbleScore;
+    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dlabel = iso => { const p = String(iso).split('-'); return MON[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0]; };
+    const signed = n => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n);
+    const WORD = { closer: 'closer', further: 'further', watching: 'watching', context: 'context', faded: 'faded' };
+    const ARROW = { closer: '▲', further: '▼', watching: '●', context: '●', faded: '●' };
+    if (!data || !S) { $('stamp').textContent = 'The meter could not load in this browser'; $('stamp').classList.add('old'); return; }
+    // the build already checked every fact; here the reader's own clock must never be able to blank the page, so dates are not re-judged
+    const later = (a, b) => (a > b ? a : b), today = later(S.todayIso(), data.checked);
+    if (S.validate(data, '9999-12-31').length) { $('stamp').textContent = 'The fact file did not pass its checks, so nothing is shown'; $('stamp').classList.add('old'); return; }
+    const r = S.score(data, today), rules = data.rules;
+    document.body.classList.remove('wait');      // nothing that looks like a reading is shown until the checked facts are in
+
+    const age = S.dayNumber(today) - S.dayNumber(data.checked), old = !(age <= 3);
+    $('stamp').textContent = (old ? 'No new checked fact since ' : 'Facts checked ') + dlabel(data.checked); $('stamp').classList.toggle('old', old);
+
+    // the gauge: 0 on the left (further) to 100 on the right (closer); teal to amber, the same weight each side
+    const CX = 300, CY = 260, R = 222;
+    const pt = (v, rad) => { const a = Math.PI * (1 - v / 100); return [CX + rad * Math.cos(a), CY - rad * Math.sin(a)]; };
+    const arc = (a, b, rad) => { const p = pt(a, rad), e = pt(b, rad); return `M${p[0].toFixed(1)} ${p[1].toFixed(1)} A${rad} ${rad} 0 0 1 ${e[0].toFixed(1)} ${e[1].toFixed(1)}`; };
+    const path = []; { const n0 = S.dayNumber(today); for (let k = 29; k >= 0; k--) path.push(S.score(data, new Date((n0 - k) * 86400000).toISOString().slice(0, 10)).needle); }
+    (function draw() {
+      const col = ['#2FE0B5', '#2FE0B599', '#9AA3B5', '#FFB34799', '#FFB347']; let h = '<defs><filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="11"/></filter></defs>', from = 0;
+      h += `<path d="${arc(0, 100, R)}" stroke="#ffffff14" stroke-width="44" fill="none"/>`;
+      if (r.needle !== 50) h += `<path id="side" data-side="${r.needle > 50 ? 'closer' : 'further'}" d="${r.needle > 50 ? arc(50.6, 100, R) : arc(0, 49.4, R)}" stroke="${r.needle > 50 ? '#FFB347' : '#2FE0B5'}" stroke-width="34" fill="none" filter="url(#soft)"/>`;
+      rules.bands.forEach((b, i) => { h += `<path d="${arc(from + 0.6, b.upto - 0.6, R)}" stroke="${col[i] || '#9AA3B5'}" stroke-width="30" fill="none"/>`; from = b.upto; });
+      for (let v = 0; v <= 100; v += 5) { const big = v % 25 === 0, a = pt(v, R - 28), b = pt(v, R - (big ? 54 : 40)); h += `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${big ? '#F5F1E6' : '#9AA3B5'}" stroke-width="${big ? 4 : 2}"/>`; }
+      [0, 25, 50, 75, 100].forEach(v => { const p = pt(v, R - 78); h += `<text x="${p[0].toFixed(1)}" y="${(p[1] + 8).toFixed(1)}" text-anchor="middle" fill="#9AA3B5" font-weight="700" font-size="20">${v}</text>`; });
+      const lo = Math.min(...path), hi = Math.max(...path);
+      if (hi > lo) h += `<path d="${arc(lo, hi, R + 19)}" stroke="#FFD98A" stroke-opacity=".75" stroke-width="5" stroke-linecap="round" fill="none"/>`;
+      const x0 = r.needle >= 50 ? 150 : 338, w = 110, top = 222, ht = 28, a = Math.min(40, lo - 4), z = Math.max(60, hi + 4);
+      const px = i => x0 + (w * i) / (path.length - 1), py = v => top + ht - ((v - a) / (z - a)) * ht;
+      h += `<text fill="#9AA3B5" font-weight="700" font-size="15"><tspan x="${x0}" y="${top - 26}">30-day path</tspan><tspan x="${x0}" y="${top - 8}">by fact date</tspan></text>`;
+      h += `<line x1="${x0}" y1="${py(50).toFixed(1)}" x2="${x0 + w}" y2="${py(50).toFixed(1)}" stroke="#9AA3B5" stroke-opacity=".5" stroke-width="1" stroke-dasharray="3 5"/>`;
+      h += `<polyline id="spark" data-points="${path.length}" data-last="${path[path.length - 1]}" points="${path.map((v, i) => px(i).toFixed(1) + ',' + py(v).toFixed(1)).join(' ')}" fill="none" stroke="#FFD98A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+      h += `<circle cx="${px(path.length - 1).toFixed(1)}" cy="${py(path[path.length - 1]).toFixed(1)}" r="5" fill="#FFD98A"/>`;
+      h += `<g id="needle" style="transform:rotate(0deg)"><g id="swing" style="transform:rotate(0deg)"><g id="sway"><path d="M${CX - 9} ${CY} L${CX} ${CY - R + 14} L${CX + 9} ${CY} Z" fill="#FFD98A"/></g></g></g>`;
+      h += `<circle cx="${CX}" cy="${CY}" r="22" fill="#04050A" stroke="#EBB95E" stroke-width="5"/>`;
+      $('gauge').innerHTML = h;
+      requestAnimationFrame(() => { $('needle').style.transform = 'rotate(' + ((r.needle - 50) * 1.8).toFixed(1) + 'deg)'; });
+    })();
+    $('gauge').setAttribute('aria-label', 'The meter reads ' + r.needle + ' out of 100: ' + r.band.toLowerCase());
+    $('num').textContent = r.needle; $('band').textContent = r.band;
+    $('band').style.color = r.needle > 55 ? 'var(--closer)' : r.needle < 45 ? 'var(--further)' : 'var(--text)';
+    $('honest').textContent = rules.one_line;
+    $('tUp').textContent = signed(r.closer); $('tDn').textContent = signed(r.further); $('tWt').textContent = r.count.watching + r.count.context + r.count.faded;
+    $('how').textContent = rules.how_to_read + ' The small line inside the dial is where the reading has been over 30 days, with each fact counted from its own date.';
+    $('feedhead').textContent = r.rows.length + ' facts, newest first';
+
+    $('feed').innerHTML = r.rows.map(row => {
+      const it = row.item, would = (row.state === 'watching' || row.state === 'faded') && row.full ? ' (' + signed(row.full) + ' at full weight)' : '';
+      const src = it.sources.map(s => `<a href="${esc(s.url)}" rel="noopener">${esc(s.name)}</a>`).join('');
+      const rec = (it.quotes || []).map(q => `<li>${q.about ? `<span class="about">About ${esc(q.about)}:</span> ` : ''}&ldquo;${esc(q.quote)}&rdquo;<cite><a href="${esc(q.url)}" rel="noopener">${esc(q.source)}</a></cite></li>`).join('') +
+        (it.derived || []).map(n => `<li class="sum">${esc(n)}<cite>Our own arithmetic from the numbers quoted above</cite></li>`).join('');
+      const when = it.date_label ? it.date_label : dlabel(it.date);
+      return `<article class="fact ${row.state}" data-move="${row.move}"><div class="meta"><span class="badge">${ARROW[row.state]} ${signed(row.move)} ${WORD[row.state]}</span><span class="date">${esc(when)}</span>${row.rule ? `<span class="rule">${esc(row.rule.label.toLowerCase())}</span>` : ''}</div>` +
+        `<h3>${esc(it.text)}</h3><p class="who"><b>Who gains, why now</b>${esc(it.gains)}</p><p class="do"><b>What you can do</b>${esc(it.use)}</p>` +
+        `<p class="why"><b>Why this score</b>${esc(it.why)}${esc(would)}</p><p class="src">Sources: ${src}</p>` +
+        `<details><summary>Receipts: the words on the source page</summary><ul>${rec}</ul></details></article>`;
+    }).join('');
+
+    const pairs = {}; rules.rules.forEach(x => { (pairs[x.pair] = pairs[x.pair] || {})[x.dir] = x; });
+    const line = (x, cls) => `<p class="${cls}"><i>${cls === 'c' ? '▲' : '▼'}</i><b>${esc(x.label.charAt(0) + x.label.slice(1).toLowerCase())}.</b> ${esc(x.plain)}${x.mirror ? '<em>mirror rule</em>' : ''}</p>`;
+    $('pairs').innerHTML = Object.keys(pairs).sort((a, b) => a - b).map(k => `<div class="pair">${line(pairs[k].closer, 'c')}${line(pairs[k].further, 'f')}</div>`).join('');
+    $('sizes').innerHTML = ['Small moves it 2 points, medium 4, big 6.'].concat(rules.sizes).map(t => `<li>${esc(t)}</li>`).join('');
+    $('guards').innerHTML = rules.guards.map(t => `<li>${esc(t)}</li>`).join('');
+
+    // when a scoring fact reaches the middle of the screen the needle swings by that fact's points, says so, and settles back; the number never moves
+    if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      let timer = 0, current = null;
+      const io = new IntersectionObserver(entries => entries.forEach(e => {
+        if (!e.isIntersecting) return; if (current) current.classList.remove('now'); current = e.target; current.classList.add('now');
+        const move = parseFloat(current.dataset.move) || 0, box = $('gauge').getBoundingClientRect(); if (!move || box.bottom < 0 || box.top > innerHeight) return;
+        const to = Math.max(0, Math.min(100, r.needle + move)) - r.needle, sw = $('swing'), push = $('push'); clearTimeout(timer);
+        sw.style.transitionDuration = '.7s'; sw.style.transform = 'rotate(' + (to * 1.8).toFixed(1) + 'deg)';
+        push.textContent = 'This fact ' + (move > 0 ? '▲ ' : '▼ ') + signed(move); push.className = 'push on ' + (move > 0 ? 'c' : 'f');
+        timer = setTimeout(() => { sw.style.transitionDuration = '1.6s'; sw.style.transform = 'rotate(0deg)'; push.classList.remove('on'); }, 2000);
+      }), { rootMargin: '-45% 0px -45% 0px' });
+      document.querySelectorAll('#feed .fact').forEach(el => io.observe(el));
+    }
+  })();
+  </script>
+</body>
+</html>
