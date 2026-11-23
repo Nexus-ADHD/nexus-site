@@ -79,20 +79,37 @@
     .fact p b{display:block;color:var(--teal);font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1px}
     .fact p.do b{color:var(--gold2)}.fact p.why b{color:var(--dim)}.fact p.why{color:var(--dim)}
     .src{color:var(--dim);font-size:15px}
-    .src a{margin-right:10px;white-space:nowrap}
+    .src a{margin-right:10px;overflow-wrap:anywhere}
     details{margin-top:8px}
     summary{cursor:pointer;color:var(--gold2);font-weight:600;font-size:15px}
     details ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
     details li{border-left:3px solid var(--line-hi);padding:2px 0 2px 12px;color:var(--muted);font-size:15px}
     details li cite{display:block;font-style:normal;color:var(--dim);font-size:14px;margin-top:2px}
     details li .about{color:var(--dim);font-size:14px}
+    .col{display:grid;gap:18px;min-width:0}
+    .col > *{min-width:0}
+    .drop{display:grid;gap:2px;padding:11px 0;border-top:1px solid var(--line)}
+    .drop:first-of-type{border-top:none}
+    .drop b{font-size:17px;line-height:1.3}
+    .drop span,.sig span{color:var(--dim);font-size:14px}
+    .sig{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;padding:12px 0;border-top:1px solid var(--line);align-items:start}
+    .sig:first-of-type{border-top:none}
+    .sig .badge{grid-row:1 / span 3}
+    .sig.c .badge{color:var(--closer);border-color:rgba(255,179,71,.6);background:rgba(255,179,71,.08)}
+    .sig.f .badge{color:var(--further);border-color:rgba(47,224,181,.6);background:rgba(47,224,181,.08)}
+    .sig b{font-size:17px;line-height:1.3}
+    .sig p{margin:0;color:var(--muted);font-size:15px;overflow-wrap:anywhere}
+    .tag{color:var(--teal);font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;margin-right:8px}
+    .tag.g{color:var(--gold2)}
+    .keep{margin:10px 0 4px;padding:10px 12px;border-left:3px solid var(--gold);color:var(--muted);font-size:16px;background:rgba(229,186,110,.06)}
+    .chip{color:var(--gold2);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;border:1px solid rgba(229,186,110,.5);border-radius:6px;padding:2px 7px}
     .pair{display:grid;gap:6px;padding:12px 0;border-top:1px solid var(--line)}
     .pair:first-of-type{border-top:none}
     .pair p{margin:0;color:var(--muted);font-size:16px}
     .pair b{font-weight:700;color:var(--text)}
     .pair .c i,.pair .f i{font-style:normal;margin-right:6px}
     .pair .c i{color:var(--closer)}.pair .f i{color:var(--further)}
-    .pair em{font-style:normal;color:var(--dim);font-size:14px;margin-left:6px;white-space:nowrap}
+    .pair em{font-style:normal;color:var(--dim);font-size:14px;margin-left:6px;overflow-wrap:anywhere}
     ul.plain{margin:0 0 6px;padding-left:20px;color:var(--muted);font-size:16px}
     ul.plain li{margin-bottom:6px}
     h3.sub{margin:18px 0 8px;font-size:16px;font-weight:700;color:var(--text)}
@@ -104,7 +121,8 @@
       h1{font-size:40px}
       .grid{grid-template-columns:440px minmax(0,1fr);align-items:start}
       .left{position:sticky;top:18px}
-      .rules{grid-column:1 / -1}
+      .rules,.book{grid-column:1 / -1}
+      .book .pairs{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
       .rules .pairs{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
     }
     @media (prefers-reduced-motion:reduce){#sway,#side{animation:none}#needle,#swing{transition:none}}
@@ -134,14 +152,34 @@
         <p class="how" id="how"></p>
       </section>
 
-      <section class="panel" aria-label="The facts">
-        <h2 id="feedhead">The facts, newest first</h2>
-        <div id="feed"></div>
+      <div class="col">
+        <section class="panel" aria-label="Recent drops">
+          <h2>Recent price moves in AI shares</h2>
+          <p class="how" style="margin-top:0">Listed with their dates and sources, and with the causes people named. A share price moving is context here: it scores zero points, falls and bounces alike. Not advice, and not a forecast.</p>
+          <div id="drops"></div>
+        </section>
+        <section class="panel" aria-label="The debt under the build-out">
+          <h2>The debt under the build-out</h2>
+          <p class="how" style="margin-top:0">The funds that saw 2008 coming did not watch share prices. They read the loans. These rows ask the same questions about AI: who lends, are borrowers paying, what does insurance on the debt cost, what do the rating firms say. History, not a prediction.</p>
+          <div id="board"></div>
+          <p class="how">The points on a row count only scored facts. The arrows count every dated item on the row, scored or not. The 30-day figure is worked out today from the facts' own dates.</p>
+        </section>
+        <section class="panel" aria-label="The facts">
+          <h2 id="feedhead">The facts, newest first</h2>
+          <div id="feed"></div>
+        </section>
+      </div>
+
+      <section class="panel book" aria-label="The 2008 playbook">
+        <h2 id="booktitle">What the funds that saw 2008 coming were watching</h2>
+        <p class="how" style="margin-top:0" id="bookintro"></p>
+        <div class="keep" id="bookkeep"></div>
+        <div class="pairs" id="book"></div>
       </section>
 
       <section class="panel rules" aria-label="Our rules">
         <h2>Our rules</h2>
-        <p class="how" style="margin-top:0">Six pairs. Every rule has a mirror sized the same way, and a fact counts the same number of points in either direction. The needle starts at 50.</p>
+        <p class="how" style="margin-top:0" id="pairsline"></p>
         <div class="pairs" id="pairs"></div>
         <h3 class="sub">How far a fact moves the needle</h3>
         <ul class="plain" id="sizes"></ul>
@@ -152,7 +190,7 @@
 
     <footer>
       <p>Not financial advice. Nothing on this page tells you to buy or sell anything.</p>
-      <p>Facts are added by hand after reading the source page. If no new fact has been checked for more than three days, the date at the top says so.</p>
+      <p>How it keeps up: every evening a lead finder searches free news feeds for each kind of fact on this page, in both directions: spending plans, chip sales, results, bonds and loans, missed payments, ratings, the cost of insuring debt, insider filings, deals where the supplier is also the investor, new listings, changes at the top, regulators and big price moves. A lead becomes a fact only after its source page is read and its words are checked against the page. The count and the last full sweep date at the top show how current the list is. If no new fact has been checked for more than three days, the date at the top says so.</p>
       <p>Disclosure: this meter is kept with the help of AI tools, including Claude, made by Anthropic. Anthropic appears in some of these facts.</p>
       <p><a href="https://www.youtube.com/@masteringai137" rel="noopener">Consciousness AI on YouTube</a> &middot; <a href="../links/">All Circle of Light links</a></p>
     </footer>
@@ -177,7 +215,7 @@
     document.body.classList.remove('wait');      // nothing that looks like a reading is shown until the checked facts are in
 
     const age = S.dayNumber(today) - S.dayNumber(data.checked), old = !(age <= 3);
-    $('stamp').textContent = (old ? 'No new checked fact since ' : 'Facts checked ') + dlabel(data.checked); $('stamp').classList.toggle('old', old);
+    $('stamp').textContent = (old ? 'No new checked fact since ' : 'Facts checked ') + dlabel(data.checked) + ' \u00B7 ' + r.rows.length + ' facts tracked \u00B7 last full sweep ' + dlabel(data.swept || data.checked); $('stamp').classList.toggle('old', old);
 
     // the gauge: 0 on the left (further) to 100 on the right (closer); teal to amber, the same weight each side
     const CX = 300, CY = 260, R = 222;
@@ -218,14 +256,35 @@
       const rec = (it.quotes || []).map(q => `<li>${q.about ? `<span class="about">About ${esc(q.about)}:</span> ` : ''}&ldquo;${esc(q.quote)}&rdquo;<cite><a href="${esc(q.url)}" rel="noopener">${esc(q.source)}</a></cite></li>`).join('') +
         (it.derived || []).map(n => `<li class="sum">${esc(n)}<cite>Our own arithmetic from the numbers quoted above</cite></li>`).join('');
       const when = it.date_label ? it.date_label : dlabel(it.date);
-      return `<article class="fact ${row.state}" data-move="${row.move}"><div class="meta"><span class="badge">${ARROW[row.state]} ${signed(row.move)} ${WORD[row.state]}</span><span class="date">${esc(when)}</span>${row.rule ? `<span class="rule">${esc(row.rule.label.toLowerCase())}</span>` : ''}</div>` +
+      const chip = it.kind === 'drop' ? 'market drop' : it.kind === 'bounce' ? 'market bounce' : it.signal ? 'board reading' + (it.lean === 'closer' ? ' ▲' : it.lean === 'further' ? ' ▼' : '') : row.rule && row.rule.origin === 'playbook' ? '2008 playbook' : '';
+      return `<article class="fact ${row.state}" id="f-${esc(it.id)}" data-move="${row.move}"><div class="meta"><span class="badge">${ARROW[row.state]} ${signed(row.move)} ${WORD[row.state]}</span><span class="date">${esc(when)}</span>${row.rule ? `<span class="rule">${esc(row.rule.label.toLowerCase())}</span>` : ''}${chip ? `<span class="chip">${chip}</span>` : ''}</div>` +
         `<h3>${esc(it.text)}</h3><p class="who"><b>Who gains, why now</b>${esc(it.gains)}</p><p class="do"><b>What you can do</b>${esc(it.use)}</p>` +
         `<p class="why"><b>Why this score</b>${esc(it.why)}${esc(would)}</p><p class="src">Sources: ${src}</p>` +
         `<details><summary>Receipts: the words on the source page</summary><ul>${rec}</ul></details></article>`;
     }).join('');
 
+    // the two boards: sums and lists only; the scoring file did the counting
+    const bd = S.boards(data, today), sent = t => { const x = String(t || '').toLowerCase(); return x.charAt(0).toUpperCase() + x.slice(1); };
+    const receipts = e => (e.quotes || []).map(q => `<li>${q.about ? `<span class="about">About ${esc(q.about)}:</span> ` : ''}&ldquo;${esc(q.quote)}&rdquo;<cite><a href="${esc(q.url)}" rel="noopener">${esc(q.source)}</a></cite></li>`).join('') +
+      (e.derived || []).map(n => `<li class="sum">${esc(n)}<cite>Our own note</cite></li>`).join('');
+    $('drops').innerHTML = bd.drops.length ? bd.drops.map(x => `<div class="drop" data-drop="${esc(x.item.id)}"><span>${x.item.kind === 'bounce' ? '▲ bounce' : '▼ drop'} &middot; ${esc(x.item.date_label || dlabel(x.item.date))} &middot; 0 points</span><b>${esc(x.item.short)}</b>` +
+      `<span><a href="#f-${esc(x.item.id)}">The full fact and who says what</a> &middot; <a href="${esc(x.item.sources[0].url)}" rel="noopener">${esc(x.item.sources[0].name)}</a></span></div>`).join('') : '<p class="how">No dated price move is on file.</p>';
+    $('board').innerHTML = bd.signals.map(g => { const up = g.closer + g.leanCloser, dn = g.further + g.leanFurther, l = g.latest;
+      return `<div class="sig ${g.net > 0 ? 'c' : g.net < 0 ? 'f' : 'z'}" data-sig="${esc(g.id)}"><span class="badge">${g.net > 0 ? '▲' : g.net < 0 ? '▼' : '●'} ${signed(g.net)}</span><b>${esc(sent(g.label))}</b>` +
+        `<p>${esc(g.plain)}</p><span>${up} ▲ &nbsp;${dn} ▼ &middot; 30 days ago ${signed(g.was30)} &middot; 2008 lesson: ${esc(sent(g.lesson))}${l ? ` &middot; <a href="#f-${esc(l.id)}">latest: ${esc(l.date_label || dlabel(l.date))}</a>` : ''}</span></div>`; }).join('');
+    const book = data.playbook;
+    if (book && Array.isArray(book.entries)) {
+      const label = id => { const x = rules.rules.find(q => q.id === id); return x ? sent(x.label) : ''; };
+      $('booktitle').textContent = book.title || $('booktitle').textContent; $('bookintro').textContent = book.intro || '';
+      $('bookkeep').innerHTML = book.caution ? `<b>Keep in mind.</b> ${esc(book.caution.then)}<details><summary>Receipts: the words on the source page</summary><ul>${receipts(book.caution)}</ul></details>` : '';
+      $('book').innerHTML = book.entries.map(e => `<div class="pair" data-book="${esc(e.id)}"><p><b>${esc(sent(e.label))}.</b> <em>${esc(e.who || '')}</em></p><p><span class="tag g">Then</span>${esc(e.then)}</p><p><span class="tag">Now, for AI</span>${esc(e.now)}</p>` +
+        `${(e.rules || []).length ? `<p><span class="tag">Scored under</span>${esc(e.rules.map(label).filter(Boolean).join(', '))}</p>` : ''}<details><summary>Receipts: the words on the source page</summary><ul>${receipts(e)}</ul></details></div>`).join('');
+    } else document.querySelector('.book').style.display = 'none';
+
     const pairs = {}; rules.rules.forEach(x => { (pairs[x.pair] = pairs[x.pair] || {})[x.dir] = x; });
-    const line = (x, cls) => `<p class="${cls}"><i>${cls === 'c' ? '▲' : '▼'}</i><b>${esc(x.label.charAt(0) + x.label.slice(1).toLowerCase())}.</b> ${esc(x.plain)}${x.mirror ? '<em>mirror rule</em>' : ''}</p>`;
+    const NUMS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'], np = Object.keys(pairs).length;
+    $('pairsline').textContent = (NUMS[np] || np) + ' pairs. Every rule has a mirror sized the same way, and a fact counts the same number of points in either direction. The needle starts at ' + rules.start + '.';
+    const line = (x, cls) => `<p class="${cls}"><i>${cls === 'c' ? '▲' : '▼'}</i><b>${esc(x.label.charAt(0) + x.label.slice(1).toLowerCase())}.</b> ${esc(x.plain)}${x.mirror ? '<em>mirror rule</em>' : x.origin === 'playbook' ? '<em>2008 playbook</em>' : ''}</p>`;
     $('pairs').innerHTML = Object.keys(pairs).sort((a, b) => a - b).map(k => `<div class="pair">${line(pairs[k].closer, 'c')}${line(pairs[k].further, 'f')}</div>`).join('');
     $('sizes').innerHTML = ['Small moves it 2 points, medium 4, big 6.'].concat(rules.sizes).map(t => `<li>${esc(t)}</li>`).join('');
     $('guards').innerHTML = rules.guards.map(t => `<li>${esc(t)}</li>`).join('');
